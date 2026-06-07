@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spaghetti alla Carbonara — La Cucina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────────
+   CSS VARIABLES  — change here to retheme
+───────────────────────────────────────── */
+:root {
+  --cream:      #faf6f0;
+  --cream-dark: #f0e9df;
+  --ink:        #1a1410;
+  --ink-light:  #5a4e44;
+  --rust:       #b84a2a;
+  --rust-light: #d4603d;
+  --gold:       #c9963a;
+  --white:      #ffffff;
+  --border:     rgba(26,20,16,0.12);
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Lato', sans-serif;
+
+  --max-w:    760px;
+  --gap:      2rem;
+  --radius:   4px;
+}
+
+/* ─────────────────────────────────────────
+   RESET + BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; width: 100%; }
+ul, ol { padding-left: 0; list-style: none; }
+a { color: var(--rust); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade  { animation: fadeUp 0.8s ease both; }
+.f1    { animation-delay: 0.1s; }
+.f2    { animation-delay: 0.25s; }
+.f3    { animation-delay: 0.4s; }
+.f4    { animation-delay: 0.55s; }
+.f5    { animation-delay: 0.7s; }
+
+/* ─────────────────────────────────────────
+   SITE HEADER / NAV
+───────────────────────────────────────── */
+.site-header {
+  background: var(--ink);
+  color: var(--cream);
+  text-align: center;
+  padding: 1rem 1.5rem;
+  letter-spacing: 0.25em;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.site-header a { color: var(--cream); }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: min(70vh, 580px);
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* Using a real food-safe Unsplash image */
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  opacity: 0.72;
+  animation: fadeIn 1.2s ease both;
+  /* Fallback gradient if image fails */
+  background: linear-gradient(135deg, #3a2010 0%, #7a3a18 50%, #2a1a08 100%);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(26,20,16,0.15) 0%,
+    rgba(26,20,16,0.55) 60%,
+    rgba(26,20,16,0.88) 100%
+  );
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.5rem 1.5rem 3rem;
+  text-align: center;
+  color: var(--white);
+}
+
+/* breadcrumb */
+.breadcrumb {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 1rem;
+}
+.breadcrumb span { margin: 0 8px; opacity: 0.4; }
+
+/* Recipe title */
+.recipe-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+}
+.recipe-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(255,255,255,0.75);
+}
+
+.recipe-tagline {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.03em;
+  max-width: 50ch;
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────────────────
+   MAIN LAYOUT  — centered column
+───────────────────────────────────────── */
+.page-body {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+/* ─────────────────────────────────────────
+   META BAR  (timing + servings)
+───────────────────────────────────────── */
+.meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--rust);
+  background: var(--white);
+  margin: 2.5rem 0;
+}
+
+.meta-item {
+  flex: 1;
+  min-width: 110px;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-right: 1px solid var(--border);
+}
+.meta-item:last-child { border-right: none; }
+
+.meta-icon { font-size: 1.4rem; margin-bottom: 4px; }
+.meta-value {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--rust);
+  line-height: 1.1;
+}
+.meta-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────
+   INTRO / STORY
+───────────────────────────────────────── */
+.recipe-intro {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--ink-light);
+  line-height: 1.85;
+  padding: 1.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+
+/* drop cap */
+.recipe-intro::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 4.2rem;
+  font-weight: 900;
+  font-style: normal;
+  line-height: 0.82;
+  color: var(--rust);
+  margin: 0.1em 0.1em 0 0;
+}
+
+/* ─────────────────────────────────────────
+   SECTION HEADINGS
+───────────────────────────────────────── */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--rust);
+  display: inline-block;
+}
+
+/* ─────────────────────────────────────────
+   INGREDIENTS
+───────────────────────────────────────── */
+.ingredients-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 2rem 2rem 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.ingredients-note {
+  font-size: 13px;
+  color: var(--ink-light);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border);
+}
+.ingredients-note strong { color: var(--rust); }
+
+.ingredients-group { margin-bottom: 1.5rem; }
+
+.ingredients-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.ingredients-list { display: flex; flex-direction: column; gap: 0; }
+
+.ingredient-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(26,20,16,0.06);
+  font-size: 15px;
+}
+.ingredient-item:last-child { border-bottom: none; }
+
+.ingredient-amount {
+  min-width: 90px;
+  font-weight: 700;
+  color: var(--rust);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.ingredient-name { color: var(--ink); }
+.ingredient-note {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ink-light);
+  font-style: italic;
+  padding-left: 1rem;
+  text-align: right;
+}
+
+/* ─────────────────────────────────────────
+   TIP BOX
+───────────────────────────────────────── */
+.tip-box {
+  background: #fff8ec;
+  border: 1px solid rgba(201,150,58,0.3);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 14px;
+  color: var(--ink-light);
+  line-height: 1.7;
+}
+.tip-box strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+/* ─────────────────────────────────────────
+   STEPS
+───────────────────────────────────────── */
+.steps-section { margin-bottom: 3rem; }
+
+.steps-list { display: flex; flex-direction: column; gap: 0; }
+
+.step-item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1.25rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.step-item:last-child { border-bottom: none; }
+
+.step-number {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--rust);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content {}
+.step-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.step-desc {
+  font-size: 15px;
+  color: var(--ink-light);
+  line-height: 1.8;
+}
+.step-desc strong { color: var(--ink); font-weight: 700; }
+
+/* ─────────────────────────────────────────
+   NUTRITION TABLE
+───────────────────────────────────────── */
+.nutrition-section { margin-bottom: 3rem; }
+
+.nutrition-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.nutrition-table caption {
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  caption-side: bottom;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  margin-top: 0;
+}
+.nutrition-table thead tr {
+  background: var(--ink);
+  color: var(--white);
+}
+.nutrition-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.nutrition-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-light);
+}
+.nutrition-table tr:nth-child(even) td { background: var(--cream-dark); }
+.nutrition-table td:last-child { font-weight: 700; color: var(--rust); text-align: right; }
+
+/* ─────────────────────────────────────────
+   TAGS / RELATED
+───────────────────────────────────────── */
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+.tag-item {
+  padding: 5px 14px;
+  border-radius: 2px;
+  background: var(--cream-dark);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  font-weight: 700;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.tag-item:hover { background: var(--rust); color: var(--white); border-color: var(--rust); }
+
+/* ─────────────────────────────────────────
+   AUTHOR / SIGNATURE
+───────────────────────────────────────── */
+.author-card {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.75rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.author-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rust), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.author-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.author-bio { font-size: 13px; color: var(--ink-light); line-height: 1.6; }
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 2rem 1.5rem;
+}
+footer strong { color: rgba(255,255,255,0.75); }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .meta-bar { gap: 0; }
+  .meta-item { min-width: 80px; padding: 1rem 0.5rem; }
+  .meta-value { font-size: 1.1rem; }
+  .ingredients-section { padding: 1.25rem; }
+  .step-item { grid-template-columns: 38px 1fr; gap: 0.875rem; }
+  .step-number { width: 38px; height: 38px; font-size: 1rem; }
+  .author-card { flex-direction: column; text-align: center; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── SITE HEADER ── -->
+<header class="site-header" role="banner">
+  <a href="#">La Cucina</a>
+  <span style="margin:0 1rem;opacity:0.3">|</span>
+  Authentic Italian Recipes
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero" aria-label="Recipe hero image">
+  <!-- 
+    STEP 1: object-fit: cover makes the image fill the container 
+    without stretching. object-position controls the focal point.
+  -->
+  <img
+    class="hero-img"
+    src="https://images.unsplash.com/photo-1612874742237-6526221588e3?w=1400&q=80&auto=format"
+    alt="A bowl of authentic spaghetti alla carbonara with crispy guanciale and freshly grated pecorino"
+    width="1400"
+    height="700"
+  >
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <!-- 
+      STEP 2: Semantic breadcrumb uses <nav> + <ol> for screen readers 
+      and search engines to understand page hierarchy.
+    -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb" style="display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px">
+        <li><a href="#" style="color:rgba(255,255,255,0.6)">Home</a></li>
+        <li><span aria-hidden="true">›</span></li>
+        <li><a href="#" style="color:rgba(255,255,255,0.6)">Pasta</a></li>
+        <li><span aria-hidden="true">›</span></li>
+        <li aria-current="page" style="color:rgba(255,255,255,0.85)">Carbonara</li>
+      </ol>
+    </nav>
+
+    <!-- 
+      STEP 3: h1 is used ONCE per page. It's the most important heading.
+      The <em> tag is semantic — it means emphasis/stress, not just italics.
+    -->
+    <h1 class="recipe-title fade f1">
+      Spaghetti <em>alla</em><br>Carbonara
+    </h1>
+    <p class="recipe-tagline fade f2">
+      The Roman classic — silky eggs, crispy guanciale, no cream, ever.
+    </p>
+  </div>
+</section>
+
+<!-- ── MAIN CONTENT ── -->
+<!--
+  STEP 4: <main> wraps the page's primary content — only one per page.
+  This helps screen readers skip directly to the content.
+-->
+<main id="main-content">
+  <div class="page-body">
+
+    <!-- Meta bar — time + servings -->
+    <!--
+      STEP 5: These stats use <dl> (description list) semantics in spirit.
+      The role="list" ensures screen readers announce it as a list.
+    -->
+    <div class="meta-bar fade f3" role="list" aria-label="Recipe details">
+      <div class="meta-item" role="listitem">
+        <div class="meta-icon" aria-hidden="true">🕐</div>
+        <div class="meta-value">10 min</div>
+        <div class="meta-label">Prep time</div>
+      </div>
+      <div class="meta-item" role="listitem">
+        <div class="meta-icon" aria-hidden="true">🔥</div>
+        <div class="meta-value">20 min</div>
+        <div class="meta-label">Cook time</div>
+      </div>
+      <div class="meta-item" role="listitem">
+        <div class="meta-icon" aria-hidden="true">⏱️</div>
+        <div class="meta-value">30 min</div>
+        <div class="meta-label">Total</div>
+      </div>
+      <div class="meta-item" role="listitem">
+        <div class="meta-icon" aria-hidden="true">🍽️</div>
+        <div class="meta-value">4</div>
+        <div class="meta-label">Servings</div>
+      </div>
+      <div class="meta-item" role="listitem">
+        <div class="meta-icon" aria-hidden="true">⚡</div>
+        <div class="meta-value">Medium</div>
+        <div class="meta-label">Difficulty</div>
+      </div>
+    </div>
+
+    <!-- Introduction -->
+    <!--
+      STEP 6: <article> is the right semantic element for a self-contained
+      piece of content like a recipe. Use it around the whole recipe.
+    -->
+    <article itemscope itemtype="https://schema.org/Recipe">
+      <meta itemprop="name" content="Spaghetti alla Carbonara">
+      <meta itemprop="cookTime" content="PT20M">
+      <meta itemprop="prepTime" content="PT10M">
+      <meta itemprop="recipeYield" content="4 servings">
+
+      <!--
+        STEP 7: The intro paragraph uses Playfair Display in italic
+        and a CSS drop cap (::first-letter pseudo-element).
+        This is classic editorial / magazine typography.
+      -->
+      <p class="recipe-intro fade f3">
+        Carbonara is Rome's greatest gift to the pasta world. Born in the Lazio kitchens 
+        of post-war Italy, this dish achieves something miraculous — a sauce that is 
+        simultaneously rich and light, built from nothing more than eggs, aged cheese, 
+        cured pork, and starchy pasta water. It demands attention, respect, and — 
+        above all — the absence of cream.
+      </p>
+
+      <!-- ── INGREDIENTS ── -->
+      <!--
+        STEP 8: <section> with aria-labelledby links the heading to the section
+        so screen readers can announce what the section is about.
+      -->
+      <section class="ingredients-section fade f4" aria-labelledby="ingredients-heading">
+        <h2 class="section-heading" id="ingredients-heading">Ingredients</h2>
+
+        <p class="ingredients-note">
+          Serves <strong>4 people</strong>. For best results, use room temperature eggs and 
+          freshly grated cheese — never pre-grated.
+        </p>
+
+        <!--
+          STEP 9: Ingredient list uses <ul> (unordered list) — the order
+          doesn't matter for ingredients. Steps use <ol> (ordered list).
+        -->
+        <div class="ingredients-group">
+          <p class="ingredients-group-label">Pasta & Pork</p>
+          <ul class="ingredients-list">
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">400 g</span>
+              <span class="ingredient-name">Spaghetti or rigatoni</span>
+              <span class="ingredient-note">bronze-die cut, if possible</span>
+            </li>
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">200 g</span>
+              <span class="ingredient-name">Guanciale</span>
+              <span class="ingredient-note">or pancetta as substitute</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ingredients-group">
+          <p class="ingredients-group-label">The Sauce</p>
+          <ul class="ingredients-list">
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">4 large</span>
+              <span class="ingredient-name">Egg yolks</span>
+              <span class="ingredient-note">+ 1 whole egg</span>
+            </li>
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">80 g</span>
+              <span class="ingredient-name">Pecorino Romano</span>
+              <span class="ingredient-note">finely grated</span>
+            </li>
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">40 g</span>
+              <span class="ingredient-name">Parmigiano Reggiano</span>
+              <span class="ingredient-note">finely grated</span>
+            </li>
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">to taste</span>
+              <span class="ingredient-name">Freshly cracked black pepper</span>
+              <span class="ingredient-note">generous amount</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ingredients-group" style="margin-bottom:0">
+          <p class="ingredients-group-label">For Cooking</p>
+          <ul class="ingredients-list">
+            <li class="ingredient-item" itemprop="recipeIngredient">
+              <span class="ingredient-amount">1 tbsp</span>
+              <span class="ingredient-name">Coarse sea salt</span>
+              <span class="ingredient-note">for pasta water</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ── STEPS ── -->
+      <section class="steps-section fade f5" aria-labelledby="steps-heading">
+        <h2 class="section-heading" id="steps-heading">Method</h2>
+
+        <aside class="tip-box" role="note">
+          <strong>⚠️ Chef's warning</strong>
+          The #1 mistake is adding hot pasta to the egg mixture too fast. 
+          You'll get scrambled eggs. Let the pan cool off the heat for 30 seconds first, then toss vigorously while adding pasta water splash by splash.
+        </aside>
+
+        <!--
+          STEP 10: Steps use <ol> (ordered list) — the order DOES matter here.
+          Each step uses <article> or just structured divs with a clear heading (h3).
+        -->
+        <ol class="steps-list" itemprop="recipeInstructions">
+
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">1</div>
+            <div class="step-content">
+              <h3 class="step-title">Boil the pasta water</h3>
+              <p class="step-desc">
+                Bring a large pot of water to a rolling boil. Salt it generously — it should 
+                taste like the sea. Add the spaghetti and cook until <strong>2 minutes before</strong> 
+                the package's al dente time. Before draining, reserve at least 
+                <strong>1 full cup of starchy pasta water</strong>.
+              </p>
+            </div>
+          </li>
+
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">2</div>
+            <div class="step-content">
+              <h3 class="step-title">Render the guanciale</h3>
+              <p class="step-desc">
+                Cut guanciale into 1cm lardons or strips. Place in a cold pan and turn heat 
+                to medium — starting cold renders the fat slowly without burning. Cook 
+                <strong>8–10 minutes</strong> until golden and crispy. Remove from heat, 
+                keep the fat in the pan.
+              </p>
+            </div>
+          </li>
+
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">3</div>
+            <div class="step-content">
+              <h3 class="step-title">Make the egg mixture</h3>
+              <p class="step-desc">
+                In a bowl, whisk together 4 egg yolks and 1 whole egg. Add the grated 
+                Pecorino and Parmesan. Season heavily with black pepper. Whisk until 
+                thick and creamy. The consistency should be <strong>like a loose custard</strong>.
+              </p>
+            </div>
+          </li>
+
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">4</div>
+            <div class="step-content">
+              <h3 class="step-title">Combine pasta and guanciale</h3>
+              <p class="step-desc">
+                Drain the pasta (reserving your cup of pasta water). Toss it 
+                directly into the pan with the guanciale and rendered fat over 
+                <strong>medium-low heat</strong> for 1 minute, tossing continuously to coat.
+              </p>
+            </div>
+          </li>
+
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">5</div>
+            <div class="step-content">
+              <h3 class="step-title">Create the silky sauce</h3>
+              <p class="step-desc">
+                Remove the pan completely from the heat. Wait 30 seconds. Pour the egg 
+                mixture over the pasta. Toss vigorously and <strong>add pasta water 
+                tablespoon by tablespoon</strong> — the starch emulsifies the sauce into 
+                a glossy, creamy coating. Serve immediately on warm plates.
+              </p>
+            </div>
+          </li>
+
+        </ol>
+
+        <aside class="tip-box" role="note" style="margin-top:1.5rem">
+          <strong>💡 Pro tip</strong>
+          Carbonara waits for no one. Have warm bowls ready, your guests seated, 
+          and serve the moment it's done. It firms up fast and cannot be reheated.
+        </aside>
+      </section>
+
+      <!-- ── NUTRITION TABLE ── -->
+      <!--
+        STEP 11: <table> is for tabular data — nutrition info is perfect for it.
+        Always include <caption>, <thead>, <tbody> for proper semantics.
+      -->
+      <section class="nutrition-section fade f5" aria-labelledby="nutrition-heading">
+        <h2 class="section-heading" id="nutrition-heading">Nutrition</h2>
+        <table class="nutrition-table">
+          <caption>Per serving (approx.). Values are estimates.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nutrient</th>
+              <th scope="col">Per 100g</th>
+              <th scope="col">Per Serving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Calories</td>
+              <td>210 kcal</td>
+              <td>680 kcal</td>
+            </tr>
+            <tr>
+              <td>Protein</td>
+              <td>9.2 g</td>
+              <td>29 g</td>
+            </tr>
+            <tr>
+              <td>Carbohydrates</td>
+              <td>24 g</td>
+              <td>78 g</td>
+            </tr>
+            <tr>
+              <td>Fat</td>
+              <td>8.5 g</td>
+              <td>27 g</td>
+            </tr>
+            <tr>
+              <td>Saturated fat</td>
+              <td>3.2 g</td>
+              <td>10 g</td>
+            </tr>
+            <tr>
+              <td>Sodium</td>
+              <td>320 mg</td>
+              <td>1020 mg</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ── TAGS ── -->
+      <div class="tags-row" aria-label="Recipe tags">
+        <span class="tag-item">Italian</span>
+        <span class="tag-item">Pasta</span>
+        <span class="tag-item">Quick</span>
+        <span class="tag-item">Roman</span>
+        <span class="tag-item">Egg-based</span>
+        <span class="tag-item">Pork</span>
+        <span class="tag-item">Weeknight</span>
+        <span class="tag-item">Comfort food</span>
+      </div>
+
+      <!-- ── AUTHOR ── -->
+      <!--
+        STEP 12: <address> is the semantic HTML element for contact/author info.
+      -->
+      <address class="author-card" style="font-style:normal">
+        <div class="author-avatar" aria-hidden="true">M</div>
+        <div>
+          <p class="author-name">Marco Esposito</p>
+          <p class="author-bio">
+            Roman-born chef and food writer. I've been making carbonara since I was 
+            eight years old — my nonna would not approve of anything less than perfection.
+            <a href="#" style="color:var(--rust);font-weight:700"> More recipes →</a>
+          </p>
+        </div>
+      </address>
+
+    </article>
+  </div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer role="contentinfo">
+  <p><strong>La Cucina</strong> — Authentic Italian Recipes · © 2026</p>
+</footer>
+
+</body>
+</html>
